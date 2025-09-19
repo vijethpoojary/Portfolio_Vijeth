@@ -1,0 +1,117 @@
+/* Base resets */
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #0a0a23;
+  --bg-accent: #0f1020;
+  --text: #e8e8ff;
+  --muted: #a0a0c0;
+  --neon-cyan: #00f5ff;
+  --neon-blue: #3b82f6;
+  --neon-violet: #9333ea;
+  --accent: linear-gradient(90deg, var(--neon-cyan), var(--neon-blue), var(--neon-violet));
+  --card: #141429;
+  --border: rgba(255,255,255,0.08);
+  --shadow: 0 10px 30px rgba(0,0,0,0.45);
+
+  font-family: Inter, ui-sans-serif, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: radial-gradient(1200px 800px at 10% -10%, rgba(0,245,255,0.06), transparent 60%),
+              radial-gradient(1200px 800px at 90% 110%, rgba(147,51,234,0.06), transparent 60%),
+              var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: var(--neon-blue);
+  text-decoration: none;
+  transition: color 160ms ease, text-shadow 160ms ease;
+}
+
+a:hover {
+  color: var(--neon-violet);
+  text-shadow: 0 0 8px rgba(59,130,246,0.35);
+}
+
+button {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  background: #101020;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.18);
+  box-shadow: 0 8px 24px rgba(0,229,255,0.18), 0 0 0 1px rgba(180,0,255,0.08) inset;
+}
+
+.container {
+  width: min(1200px, 92%);
+  margin: 0 auto;
+}
+
+.section {
+  padding: 72px 0;
+}
+
+.section-title {
+  font-size: 1.75rem;
+  margin: 0 0 24px;
+  background: var(--accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  position: relative;
+}
+
+.section-title:before {
+  content: '';
+  position: absolute;
+  inset: -8px -12px;
+  background: var(--accent);
+  filter: blur(18px);
+  opacity: 0.35;
+  z-index: -1;
+}
+
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 56px 0;
+  }
+  .section-title {
+    font-size: 1.5rem;
+  }
+}

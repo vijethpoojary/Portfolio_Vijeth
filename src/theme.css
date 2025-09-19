@@ -1,0 +1,25 @@
+/* Glow utilities */
+.glow {
+  position: relative;
+}
+.glow:before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: radial-gradient(350px 120px at 20% 0%, rgba(0,229,255,0.2), transparent 60%),
+              radial-gradient(350px 120px at 80% 100%, rgba(180,0,255,0.2), transparent 60%);
+  filter: blur(24px);
+  opacity: 0.5;
+  z-index: -1;
+}
+
+/* Section dividers */
+.section { position: relative; }
+.section:after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+} 
