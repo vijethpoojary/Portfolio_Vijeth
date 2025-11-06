@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
+import { memo } from 'react'
 
-export default function About() {
+function About() {
   return (
     <section className="section" id="about">
       <div className="container grid" style={{ gridTemplateColumns: '1fr', gap: 20 }}>
@@ -24,3 +25,5 @@ export default function About() {
     </section>
   )
 }
+
+export default memo(About)

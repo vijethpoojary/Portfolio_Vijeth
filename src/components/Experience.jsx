@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
+import { memo, useMemo } from 'react'
 
-export default function Experience() {
-  const roles = [
+function Experience() {
+  const roles = useMemo(() => [
     {
       role: 'Software Developer Intern',
       company: 'Dregal I Pvt. Ltd',
@@ -22,7 +23,7 @@ export default function Experience() {
         'Provisioned cloud infrastructure using Terraform and monitored systems with Prometheus & Grafana.',
       ]
     }
-  ]
+  ], [])
 
   return (
     <section className="section" id="experience">
@@ -56,3 +57,5 @@ export default function Experience() {
     </section>
   )
 }
+
+export default memo(Experience)

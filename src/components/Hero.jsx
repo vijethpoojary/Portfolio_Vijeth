@@ -1,37 +1,46 @@
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useMemo, memo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Canvas } from "@react-three/fiber";
 import DeveloperCharacter from "../three/DeveloperCharacter";
 import { Trefoil } from "ldrs/react";
 import "ldrs/react/Trefoil.css";
 
-export default function Hero() {
-  const flow = [
+function Hero() {
+  const flow = useMemo(() => [
     { text: "Hi, Vijeth here 👋", options: null, autoNext: true },
     { text: "Are you a recruiter?", options: ["Yes", "No"] },
     { text: "Awesome! Would you like to check my projects?", options: ["Yes", "No"] },
     { text: "Cool! You can still explore my portfolio 🚀", options: null },
-  ];
+  ], []);
 
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(true); // spinner + bubble control
 
-  const handleOption = (answer) => {
-    if (flow[step].text.includes("Are you a recruiter?") && answer === "No") {
-      setStep(flow.length - 1);
-      return;
-    }
-    if (step < flow.length - 1) setStep(step + 1);
-  };
+  const handleOption = useCallback((answer) => {
+    setStep((currentStep) => {
+      if (flow[currentStep].text.includes("Are you a recruiter?") && answer === "No") {
+        return flow.length - 1;
+      }
+      if (currentStep < flow.length - 1) return currentStep + 1;
+      return currentStep;
+    });
+  }, [flow]);
+
+  const handleLoaded = useCallback(() => {
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    if (!loading && flow[step].autoNext) {
+    if (!loading && flow[step]?.autoNext) {
       const timer = setTimeout(() => {
-        if (step < flow.length - 1) setStep(step + 1);
+        setStep((currentStep) => {
+          if (currentStep < flow.length - 1) return currentStep + 1;
+          return currentStep;
+        });
       }, step === 0 ? 3000 : 2000); // 👈 first step = 3s, others = 2s
       return () => clearTimeout(timer);
     }
-  }, [step, flow, loading]);
+  }, [step, loading, flow]);
 
   return (
     <section className="hero section" id="hero">
@@ -74,7 +83,15 @@ export default function Hero() {
               </div>
             )}
 
-            <Canvas camera={{ position: [0, 1.6, 3.6], fov: 40 }}>
+            <Canvas 
+              camera={{ position: [0, 1.6, 3.6], fov: 40 }}
+              dpr={typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 1}
+              performance={{ min: 0.5 }}
+              gl={{ 
+                antialias: true,
+                powerPreference: "high-performance"
+              }}
+            >
               <ambientLight intensity={0.5} />
               <directionalLight position={[5, 10, 5]} intensity={1} castShadow />
 
@@ -82,7 +99,7 @@ export default function Hero() {
                 <DeveloperCharacter
                   scale={0.15}
                   position={[0, -0.95, 0]}
-                  onLoaded={() => setLoading(false)} // hide spinner + show bubble
+                  onLoaded={handleLoaded} // hide spinner + show bubble
                 />
               </Suspense>
             </Canvas>
@@ -122,3 +139,5 @@ export default function Hero() {
     </section>
   );
 }
+
+export default memo(Hero);

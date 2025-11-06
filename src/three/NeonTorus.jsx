@@ -1,7 +1,7 @@
-import { useRef } from 'react'
+import { useRef, memo } from 'react'
 import { useFrame } from '@react-three/fiber'
 
-export default function NeonTorus() {
+function NeonTorus() {
   const ref = useRef()
   useFrame((state, delta) => {
     if (ref.current) {
@@ -11,7 +11,7 @@ export default function NeonTorus() {
   })
   return (
     <mesh ref={ref} rotation={[0.4, 0.8, 0]} position={[3.2, 0.2, -1]}>
-      <torusKnotGeometry args={[1.6, 0.35, 200, 28]} />
+      <torusKnotGeometry args={[1.6, 0.35, 128, 16]} />
       <meshStandardMaterial
         color={0x3b82f6}
         metalness={0.85}
@@ -22,3 +22,5 @@ export default function NeonTorus() {
     </mesh>
   )
 }
+
+export default memo(NeonTorus)

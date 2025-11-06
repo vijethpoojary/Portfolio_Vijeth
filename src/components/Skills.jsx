@@ -1,31 +1,52 @@
 import { motion } from 'framer-motion'
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, memo } from 'react'
 
 function useTilt() {
   const ref = useRef(null)
+  const rafId = useRef(null)
+  
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const onMove = e => {
-      const rect = el.getBoundingClientRect()
-      const px = (e.clientX - rect.left) / rect.width
-      const py = (e.clientY - rect.top) / rect.height
-      const rx = (py - 0.5) * -10
-      const ry = (px - 0.5) * 10
-      el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`
+    
+    const onMove = (e) => {
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current)
+      }
+      
+      rafId.current = requestAnimationFrame(() => {
+        const rect = el.getBoundingClientRect()
+        const px = (e.clientX - rect.left) / rect.width
+        const py = (e.clientY - rect.top) / rect.height
+        const rx = (py - 0.5) * -10
+        const ry = (px - 0.5) * 10
+        el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`
+      })
     }
-    const onLeave = () => (el.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0)')
-    el.addEventListener('mousemove', onMove)
+    
+    const onLeave = () => {
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current)
+        rafId.current = null
+      }
+      el.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0)'
+    }
+    
+    el.addEventListener('mousemove', onMove, { passive: true })
     el.addEventListener('mouseleave', onLeave)
+    
     return () => {
       el.removeEventListener('mousemove', onMove)
       el.removeEventListener('mouseleave', onLeave)
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current)
+      }
     }
   }, [])
   return ref
 }
 
-export default function Skills() {
+function Skills() {
   const skillGroups = [
     { title: 'Programming Languages', items: ['C', 'Java', 'Python', 'JavaScript'] },
     { title: 'Web Development', items: ['HTML', 'CSS', 'React.js', 'Node.js', 'Express.js', 'Flask'] },
@@ -72,3 +93,5 @@ export default function Skills() {
     </section>
   )
 }
+
+export default memo(Skills)

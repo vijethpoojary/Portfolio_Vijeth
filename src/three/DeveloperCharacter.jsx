@@ -41,29 +41,48 @@ function DeveloperGLTF({ url, position, scale, onLoaded }) {
   const [dragging, setDragging] = useState(false);
   const lastPos = useRef([0, 0]);
   const rotation = useRef([0, 0]);
+  const rafId = useRef(null);
 
   useEffect(() => {
     const handleDown = (e) => {
       setDragging(true);
       lastPos.current = [e.clientX, e.clientY];
     };
+    
     const handleMove = (e) => {
       if (!dragging) return;
-      const [lastX] = lastPos.current;
-      const dx = e.clientX - lastX;
-      rotation.current[1] += dx * 0.01;
-      lastPos.current = [e.clientX, e.clientY];
+      
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+      }
+      
+      rafId.current = requestAnimationFrame(() => {
+        const [lastX] = lastPos.current;
+        const dx = e.clientX - lastX;
+        rotation.current[1] += dx * 0.01;
+        lastPos.current = [e.clientX, e.clientY];
+      });
     };
-    const handleUp = () => setDragging(false);
+    
+    const handleUp = () => {
+      setDragging(false);
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+        rafId.current = null;
+      }
+    };
 
     window.addEventListener("mousedown", handleDown);
-    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mousemove", handleMove, { passive: true });
     window.addEventListener("mouseup", handleUp);
 
     return () => {
       window.removeEventListener("mousedown", handleDown);
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("mouseup", handleUp);
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+      }
     };
   }, [dragging]);
 

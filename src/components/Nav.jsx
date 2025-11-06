@@ -1,18 +1,29 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, memo } from 'react'
 import { Link } from 'react-router-dom'
 
-export default function Nav() {
+function Nav() {
+  const navRef = useRef(null)
+  const ticking = useRef(false)
+
   useEffect(() => {
+    const nav = navRef.current || document.querySelector('.nav')
+    if (!nav) return
+
     const onScroll = () => {
-      const nav = document.querySelector('.nav')
-      if (!nav) return
-      const scrolled = window.scrollY > 8
-      nav.style.background = scrolled
-        ? 'linear-gradient(180deg, rgba(10,10,20,0.98), rgba(10,10,20,0.6))'
-        : 'linear-gradient(180deg, rgba(10,10,20,0.95), rgba(10,10,20,0.55))'
-      nav.style.boxShadow = scrolled ? '0 8px 30px rgba(0, 0, 0, 0.45)' : '0 6px 30px rgba(0, 0, 0, 0.35)'
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.scrollY > 8
+          nav.style.background = scrolled
+            ? 'linear-gradient(180deg, rgba(10,10,20,0.98), rgba(10,10,20,0.6))'
+            : 'linear-gradient(180deg, rgba(10,10,20,0.95), rgba(10,10,20,0.55))'
+          nav.style.boxShadow = scrolled ? '0 8px 30px rgba(0, 0, 0, 0.45)' : '0 6px 30px rgba(0, 0, 0, 0.35)'
+          ticking.current = false
+        })
+        ticking.current = true
+      }
     }
-    window.addEventListener('scroll', onScroll)
+    
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
@@ -33,10 +44,11 @@ export default function Nav() {
   }, [])
 
   return (
-    <header className="nav">
+    <header className="nav" ref={navRef}>
       <div className="container nav-inner">
         <Link to="/" className="brand">VP</Link>
         <nav>
+          <a href="#hero">Home</a>
           <a href="#about">About</a>
           <a href="#skills">Skills</a>
           <a href="#projects">Projects</a>
@@ -47,3 +59,5 @@ export default function Nav() {
     </header>
   )
 }
+
+export default memo(Nav)

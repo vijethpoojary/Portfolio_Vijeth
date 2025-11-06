@@ -1,14 +1,21 @@
-import { useRef } from 'react'
+import { useRef, memo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import FloatingIcosahedron from './FloatingIcosahedron'
 
-export default function ParallaxGroup() {
+function ParallaxGroup() {
   const group = useRef()
+  const targetRotation = useRef({ x: 0, y: 0 })
+  
   useFrame(({ pointer }) => {
     if (!group.current) return
-    group.current.rotation.y = pointer.x * 0.12
-    group.current.rotation.x = -pointer.y * 0.08
+    // Smooth interpolation for better performance
+    targetRotation.current.y = pointer.x * 0.12
+    targetRotation.current.x = -pointer.y * 0.08
+    
+    group.current.rotation.y += (targetRotation.current.y - group.current.rotation.y) * 0.1
+    group.current.rotation.x += (targetRotation.current.x - group.current.rotation.x) * 0.1
   })
+  
   return (
     <group ref={group}>
       <FloatingIcosahedron position={[4.5, 0.5, -2]} color={0x00f5ff} speed={0.55} />
@@ -17,3 +24,5 @@ export default function ParallaxGroup() {
     </group>
   )
 }
+
+export default memo(ParallaxGroup)

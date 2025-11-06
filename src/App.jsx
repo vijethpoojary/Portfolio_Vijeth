@@ -1,4 +1,5 @@
 import { BrowserRouter } from 'react-router-dom'
+import { memo } from 'react'
 import './App.css'
 
 import ThreeBackground from './components/ThreeBackground'
@@ -10,7 +11,7 @@ import Projects from './components/Projects'
 import Experience from './components/Experience'
 import Contact from './components/Contact'
 
-export default function App() {
+function App() {
   return (
     <BrowserRouter>
       <div className="app-root">
@@ -29,3 +30,5 @@ export default function App() {
     </BrowserRouter>
   )
 }
+
+export default memo(App)
