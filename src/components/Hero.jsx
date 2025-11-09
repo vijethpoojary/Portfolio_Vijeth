@@ -204,7 +204,7 @@ function Hero() {
           className="hero-content"
           style={{ willChange: 'opacity, transform' }}
         >
-          <h1 className="hero-title">Vijeth Poojary</h1>
+          <h1 className="hero-title">Vijeth </h1>
           <p className="hero-subtitle">
             Software Engineer 
           </p>
