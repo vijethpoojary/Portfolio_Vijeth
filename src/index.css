@@ -30,6 +30,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Optimize scrolling performance */
+  -webkit-overflow-scrolling: touch;
 }
 
 html, body, #root {
@@ -38,6 +40,10 @@ html, body, #root {
 
 body {
   margin: 0;
+  /* Optimize rendering */
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
@@ -104,6 +110,10 @@ button:hover {
   border-radius: 16px;
   box-shadow: var(--shadow);
   backdrop-filter: blur(8px);
+  /* Performance optimizations */
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
+  content-visibility: auto;
 }
 
 .grid {

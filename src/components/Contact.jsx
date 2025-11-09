@@ -1,11 +1,16 @@
 import { motion } from 'framer-motion'
-import { memo, useState } from 'react'
+import { memo, useState, useCallback, useRef, useEffect } from 'react'
+
+const MotionForm = motion.form
+const MotionCard = motion.div
+const MotionMessage = motion.div
 
 function Contact() {
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const timeoutRef = useRef(null)
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
     
@@ -25,8 +30,12 @@ function Contact() {
       if (response.ok) {
         setSubmitted(true)
         form.reset()
+        // Clear any existing timeout
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current)
+        }
         // Hide success message after 5 seconds
-        setTimeout(() => setSubmitted(false), 5000)
+        timeoutRef.current = setTimeout(() => setSubmitted(false), 5000)
       } else {
         throw new Error('Form submission failed')
       }
@@ -36,18 +45,28 @@ function Contact() {
     } finally {
       setIsSubmitting(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   return (
     <section className="section" id="contact">
       <div className="container">
         <h2 className="section-title">Contact</h2>
-        <div className="grid" style={{ gridTemplateColumns: '1.2fr 1fr' }}>
-          <motion.form 
+        <div className="grid contact-grid">
+          <MotionForm 
             className="card contact-form" 
             initial={{ opacity: 0, y: 24 }} 
             whileInView={{ opacity: 1, y: 0 }} 
             viewport={{ once: true, margin: '-10% 0px' }}
+            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+            style={{ willChange: 'opacity, transform' }}
             onSubmit={handleSubmit}
           >
             {/* FormSubmit hidden inputs */}
@@ -86,9 +105,11 @@ function Contact() {
               />
             </div>
             {submitted && (
-              <motion.div
+              <MotionMessage
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
                 style={{
                   padding: '12px',
                   background: 'rgba(59, 130, 246, 0.1)',
@@ -97,10 +118,11 @@ function Contact() {
                   marginBottom: '16px',
                   color: '#00f5ff',
                   textAlign: 'center',
+                  willChange: 'opacity, transform',
                 }}
               >
                 ✓ Message sent successfully! I'll get back to you soon.
-              </motion.div>
+              </MotionMessage>
             )}
             <button 
               type="submit" 
@@ -113,15 +135,41 @@ function Contact() {
             >
               {isSubmitting ? 'Sending...' : 'Send Message'}
             </button>
-          </motion.form>
-          <motion.div className="card contact-side" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+          </MotionForm>
+          <MotionCard 
+            className="card contact-side" 
+            initial={{ opacity: 0, y: 24 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true, margin: '-10% 0px' }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+          >
             <ul className="contact-list floating-icons">
-              <li><span>✉️</span> <a >poojaryvijeth239@gmail.com</a></li>
-              <li><span>📞</span> <a >+91-7795113205</a></li>
-              <li><span>💼</span> <a target="_blank" href="https://linkedin.com/in/vijethpoojary">linkedin.com/in/vijethpoojary</a></li>
-              <li><span>🐙</span> <a target="_blank" href="https://github.com/vijethpoojary">github.com/vijethpoojary</a></li>
+              <li>
+                <span>✉️</span> 
+                <a href="mailto:poojaryvijeth239@gmail.com">
+                  poojaryvijeth239@gmail.com
+                </a>
+              </li>
+              <li>
+                <span>📞</span> 
+                <a href="tel:+917795113205">
+                  +91-7795113205
+                </a>
+              </li>
+              <li>
+                <span>💼</span> 
+                <a target="_blank" rel="noopener noreferrer" href="https://linkedin.com/in/vijethpoojary">
+                  linkedin.com/in/vijethpoojary
+                </a>
+              </li>
+              <li>
+                <span>🐙</span> 
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com/vijethpoojary">
+                  github.com/vijethpoojary
+                </a>
+              </li>
             </ul>
-          </motion.div>
+          </MotionCard>
         </div>
       </div>
     </section>
