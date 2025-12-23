@@ -20,7 +20,7 @@ function Hero() {
   );
   const navigate = useNavigate();
   const resumeDownloadRef = useRef(null);
-  const resumeLink = "/resume.pdf";
+  const resumeLink = "/Vijet.Poojary_Resume.pdf";
 
   const flow = useMemo(
     () => [
