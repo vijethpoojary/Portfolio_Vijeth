@@ -6,9 +6,20 @@ const MotionItem = motion.div
 function Experience() {
   const roles = useMemo(() => [
     {
-      role: 'Software Engineer Trainee',
+      role: 'Associate Software Engineer',
       company: 'Gisul',
-      period: 'Started in October 2025, Mangalore, Karnataka',
+      period: 'Started in January 2026, Bangalore, Karnataka',
+     bullets: [
+  'Developing scalable web applications using Python FastAPI and Next.js with a strong focus on performance and reliability.',
+  'Deploying and managing applications using Docker, Kubernetes clusters, and CI/CD pipelines implemented with GitHub Actions.',
+  'Working with microservices architecture and automating cloud services using PowerShell scripts while adopting modern DevOps practices.',
+]
+
+    },
+    {
+      role: 'Software Engineer Trainee',
+      company: 'Gisul ',
+      period: 'October 2025 - December 2025, Bangalore, Karnataka',
       bullets: [
         'Contributing to the design and development of scalable web applications with a focus on performance and user experience.',
         'Collaborating across teams to build and integrate backend and frontend systems for seamless functionality.',
