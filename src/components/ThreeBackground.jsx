@@ -1,10 +1,9 @@
 import { Suspense, memo } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
-import NeonTorus from '../three/NeonTorus'
-import FloatingIcosahedron from '../three/FloatingIcosahedron'
 import Stars from '../three/Stars'
-import ParallaxGroup from '../three/ParallaxGroup'
+import TechTextBackground from '../three/TechTextBackground'
+import { EffectComposer, Bloom, DepthOfField } from '@react-three/postprocessing'
 
 function ThreeBackground() {
   // Safely get device pixel ratio
@@ -12,7 +11,7 @@ function ThreeBackground() {
   
   return (
     <Canvas 
-      camera={{ position: [0, 0, 8], fov: 60 }} 
+      camera={{ position: [0, 0.5, 8], fov: 55 }} 
       className="three-canvas" 
       dpr={dpr}
       performance={{ min: 0.5 }}
@@ -25,20 +24,22 @@ function ThreeBackground() {
       }}
     >
       <color attach="background" args={[0x0a0a23]} />
-      <ambientLight intensity={0.7} />
-      <pointLight position={[8, 8, 8]} intensity={28} color={0x00f5ff} />
-      <pointLight position={[-8, -6, -6]} intensity={18} color={0x3b82f6} />
-      <pointLight position={[0, 3, 6]} intensity={8} color={0x9333ea} />
+      {/* Cinematic lighting: soft key, rim/back, ambient */}
+      <ambientLight intensity={0.35} />
+      <directionalLight position={[7, 10, 8]} intensity={0.75} color={0xffffff} />
+      <spotLight position={[-5, 3, -5]} angle={0.4} penumbra={0.6} intensity={0.6} color={0x99ccff} />
+      <spotLight position={[3, 1, 4]} angle={0.3} penumbra={0.4} intensity={0.3} color={0xccaaff} />
       <Suspense fallback={null}>
-        <NeonTorus />
-        <ParallaxGroup />
+        <TechTextBackground />
         <Stars />
+        <EffectComposer>
+          <Bloom intensity={0.12} luminanceThreshold={0.3} luminanceSmoothing={0.1} />
+        </EffectComposer>
       </Suspense>
       <OrbitControls
         enablePan={false}
         enableZoom={false}
-        autoRotate
-        autoRotateSpeed={0.15}
+        autoRotate={false}
         dampingFactor={0.05}
         enableDamping
       />
